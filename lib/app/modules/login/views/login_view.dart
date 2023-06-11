@@ -5,6 +5,9 @@ import '../controllers/login_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends GetView<LoginController> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +62,7 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                             child: TextFormField(
+                              controller: _usernameController,
                               decoration: InputDecoration(
                                 contentPadding:
                                     EdgeInsets.symmetric(horizontal: 16),
@@ -91,6 +95,7 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                             child: TextFormField(
+                              controller: _passwordController,
                               obscureText:
                                   true, // membuat input password menjadi titik-titik
                               decoration: InputDecoration(
@@ -109,7 +114,13 @@ class LoginView extends GetView<LoginController> {
                             height: 50,
                             width: MediaQuery.of(context).size.width * 0.75,
                             child: ElevatedButton(
-                              onPressed: () => Get.offAllNamed(Routes.HOME),
+                              onPressed: () {
+                                // Call the login function from the LoginController
+                                controller.login(
+                                  _usernameController.text,
+                                  _passwordController.text,
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
                                 primary: Color.fromARGB(255, 255, 153, 12),
                                 shape: RoundedRectangleBorder(
@@ -117,7 +128,7 @@ class LoginView extends GetView<LoginController> {
                                 ),
                               ),
                               child: Text(
-                                'Masuk',
+                                'Login',
                                 style: GoogleFonts.montserrat(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -129,7 +140,6 @@ class LoginView extends GetView<LoginController> {
                         ],
                       ),
                     ),
-
                     SizedBox(height: 230), //versi apk
                     Container(
                       width: MediaQuery.of(context).size.width * 0.75,

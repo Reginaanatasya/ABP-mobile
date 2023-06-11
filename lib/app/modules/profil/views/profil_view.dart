@@ -310,7 +310,7 @@ class ProfilView extends GetView<ProfilController> {
                                 width: MediaQuery.of(context).size.width * 0.75,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    //bingung
+                                    Get.offNamed(Routes.LOGIN);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Color.fromARGB(255, 181, 23, 42),
