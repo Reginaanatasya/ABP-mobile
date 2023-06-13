@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
+import '../../karyawan/models/karyawan.dart';
 import '../controllers/home_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -53,6 +54,9 @@ class _JamState extends State<JamWidget> {
 }
 
 class HomeView extends GetView<HomeController> {
+  final Karyawan karyawan;
+
+  HomeView({required this.karyawan});
   @override
   Widget build(BuildContext context) {
     // Inisialisasi package intl
@@ -61,6 +65,10 @@ class HomeView extends GetView<HomeController> {
     // Membuat stream untuk jam yang terus terupdate
     Stream<DateTime> clockStream =
         Stream.periodic(Duration(seconds: 1), (_) => DateTime.now());
+
+    // Access the karyawan object from Get.arguments
+    final karyawan = Get.arguments as Karyawan?;
+    final karyawanOrNull = karyawan ?? null;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -73,7 +81,7 @@ class HomeView extends GetView<HomeController> {
           padding:
               EdgeInsets.only(left: 16), // Menambahkan jarak dari sisi kiri
           child: RichText(
-            text: const TextSpan(
+            text: TextSpan(
               children: [
                 TextSpan(
                   text: "Halo, ",
@@ -82,7 +90,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   children: [
                     TextSpan(
-                      text: "Bernie",
+                      text: karyawan?.nama ?? '',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
                       children: [
@@ -92,7 +100,7 @@ class HomeView extends GetView<HomeController> {
                               fontSize: 24, fontWeight: FontWeight.w500),
                         ),
                         TextSpan(
-                          text: "\nIT",
+                          text: "\n${karyawan?.jabatan ?? ''}",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.normal),
                         ),
@@ -132,7 +140,7 @@ class HomeView extends GetView<HomeController> {
           Container(
             height: 528,
             width: Get.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/background/homebg-attendify.png"),
                 fit: BoxFit.cover,
@@ -163,8 +171,8 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       JamWidget(),
-                      SizedBox(height: 15),
-                      Container(
+                      const SizedBox(height: 15),
+                      SizedBox(
                         height: 50,
                         width: MediaQuery.of(context).size.width * 0.75,
                         child: ElevatedButton(

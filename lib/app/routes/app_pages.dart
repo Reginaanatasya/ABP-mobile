@@ -1,9 +1,11 @@
+import 'package:attendify/app/modules/karyawan/models/karyawan.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/home/views/home_view.dart';
+
 import '../modules/izin/bindings/izin_binding.dart';
 import '../modules/izin/views/izin_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -25,12 +27,12 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomeView(),
+      page: () => HomeView(karyawan: Get.arguments as Karyawan),
       binding: HomeBinding(),
       children: [
         GetPage(
           name: _Paths.HOME,
-          page: () => HomeView(),
+          page: () => HomeView(karyawan: Get.arguments as Karyawan),
           binding: HomeBinding(),
         ),
       ],

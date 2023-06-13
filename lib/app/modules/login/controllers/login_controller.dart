@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../karyawan/models/karyawan.dart';
 
 class LoginController extends GetxController {
   Future<void> login(String username, String password) async {
@@ -16,25 +17,65 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         // Successful login, handle the response data
+        final token = response.data['token'];
+        final nik = response.data['nik'];
+        final karyawan = await fetchKaryawanData(token, nik);
+
         // Redirect to the HOME route or perform other actions
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.HOME, arguments: karyawan);
       } else {
         // Failed login, handle the error
         // Show an error message or perform other actions
-        Get.defaultDialog(
-          title: 'Error',
-          middleText: 'Failed to log in.',
-          confirm: TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: Text('OK'),
+        await Get.dialog(
+          AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to log in.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text('OK'),
+              ),
+            ],
           ),
         );
       }
     } catch (error) {
       // Handle Dio request error
       print('Error: $error');
+    }
+  }
+
+  Future<Karyawan> fetchKaryawanData(String token, String nik) async {
+    final karyawanUrl = 'http://10.0.2.2:8001/api/karyawan/$nik';
+
+    try {
+      final response = await Dio().get(
+        karyawanUrl,
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful response, extract and return the Karyawan data
+        final data = response.data['data'];
+        final nama = data['nama_lengkap'];
+        final nik = data['nik'] ?? '';
+        final jabatan = data['jabatan'] ??
+            ''; // Handle null value with a default empty string
+
+        return Karyawan(nama: nama, nik: nik, jabatan: jabatan);
+      } else {
+        // Failed to fetch Karyawan data, handle the error
+        print('Failed to fetch Karyawan data: ${response.statusCode}');
+        throw Exception('Failed to fetch Karyawan data');
+      }
+    } catch (error) {
+      // Handle Dio request error
+      print('Error: $error');
+      throw Exception('Failed to fetch Karyawan data');
     }
   }
 }
