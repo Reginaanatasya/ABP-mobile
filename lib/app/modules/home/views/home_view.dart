@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../karyawan/models/karyawan.dart';
+import 'package:slider_button/slider_button.dart';
 import '../controllers/home_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -181,14 +182,71 @@ class HomeView extends GetView<HomeController> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Aplikasi belum jadi!'),
+                                  title: Text('Action Absensi'),
                                   actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('OK'),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: SliderButton(
+                                        action: () {
+                                          // Custom button action
+                                          // Add your custom logic here
+                                          Get.find<HomeController>()
+                                              .callPresensiApi(
+                                                  karyawan?.nik ?? '');
+                                          Get.offAllNamed(Routes.HOME,
+                                              arguments: karyawan);
+                                        },
+                                        label: Text(
+                                          'Absen Masuk',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        icon: Icon(
+                                          Icons.arrow_right_alt,
+                                          color: Colors.white,
+                                        ),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 12, 0, 27),
+                                        buttonSize: 48.0,
+                                        baseColor: const Color.fromARGB(
+                                            255, 66, 245, 69),
+                                        highlightedColor: Colors.blue.shade800,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10, height: 20),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: SliderButton(
+                                        action: () {
+                                          // Custom button action
+                                          // Add your custom logic here
+                                          Get.find<HomeController>()
+                                              .callPresensiOut(
+                                                  karyawan?.nik ?? '');
+                                          Get.offAllNamed(Routes.HOME,
+                                              arguments: karyawan);
+                                        },
+                                        label: Text(
+                                          'Absen Keluar',
+                                          style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 47, 1, 1),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        icon: Icon(
+                                          Icons.arrow_right_alt,
+                                          color: Colors.white,
+                                        ),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 192, 217, 238),
+                                        buttonSize: 48.0,
+                                        baseColor:
+                                            Color.fromARGB(255, 241, 77, 41),
+                                        highlightedColor: Colors.blue.shade800,
+                                      ),
                                     ),
                                   ],
                                 );
@@ -202,7 +260,7 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ),
                           child: Text(
-                            'Masuk',
+                            'Absen',
                             style: GoogleFonts.montserrat(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -248,425 +306,150 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.only(top: 0),
-                            children: [
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
+                          child: FutureBuilder<List<dynamic>>(
+                            future:
+                                controller.listPresensi(karyawan?.nik ?? ''),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // Show a loading indicator while waiting for the future to complete
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                // Handle the error case
+                                print('Error calling API: ${snapshot.error}');
+                                return Text('Error occurred');
+                              } else if (snapshot.hasData) {
+                                final listPresensi = snapshot.data!;
+
+                                if (listPresensi.isEmpty) {
+                                  // Show a placeholder if the list is empty
+                                  return Text('No data available');
+                                }
+
+                                return ListView.builder(
+                                  padding: EdgeInsets.only(top: 0),
+                                  itemCount: listPresensi.length,
+                                  itemBuilder: (context, index) {
+                                    final presensi = listPresensi[index];
+
+                                    // Use the presensi data to build your UI elements
+                                    return FractionallySizedBox(
+                                      widthFactor: 0.85,
+                                      child: Container(
+                                        height: 80,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8.0),
+                                        padding: EdgeInsets.all(12.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Absen Masuk",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Color.fromRGBO(
+                                                            12, 190, 255, 1),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      presensi['tgl_presensi'],
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      presensi['jam_in'],
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Color.fromARGB(
+                                                            255, 255, 153, 12),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Absen Keluar",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Color.fromRGBO(
+                                                            255, 73, 12, 1),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      presensi['tgl_presensi'],
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      presensi['jam_out'] ?? '',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Color.fromARGB(
+                                                            255, 255, 153, 12),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
+                                              ],
                                             ),
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor:
-                                    0.85, // Mengatur faktor lebar menjadi 85%
-                                child: Container(
-                                  height: 70, // Menentukan tinggi kontainer
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              16.0), // Tambahkan padding kiri dan kanan di sini
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Senin, 12 Mei 2023",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:30:21",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 153, 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Absen Masuk",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color.fromARGB(
-                                                  255, 0, 152, 237),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Tambahkan Container lain di sini sesuai kebutuhan
-                            ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                // Handle other cases
+                                return Text('No data available');
+                              }
+                            },
                           ),
                         ),
                         Container(
@@ -689,7 +472,8 @@ class HomeView extends GetView<HomeController> {
                               GestureDetector(
                                 onTap: () {
                                   // Fungsi Beranda
-                                  // Tambahkan kode yang ingin Anda jalankan saat tombol Beranda ditekan
+                                  Get.offAllNamed(Routes.HOME,
+                                      arguments: karyawan);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -712,7 +496,7 @@ class HomeView extends GetView<HomeController> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.toNamed(Routes.IZIN);
+                                  Get.toNamed(Routes.IZIN, arguments: karyawan);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

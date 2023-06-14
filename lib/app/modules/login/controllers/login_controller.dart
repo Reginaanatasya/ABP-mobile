@@ -26,16 +26,17 @@ class LoginController extends GetxController {
       } else {
         // Failed login, handle the error
         // Show an error message or perform other actions
-        await Get.dialog(
+        Get.dialog(
           AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to log in.'),
+            title: Text('Login gagal'),
+            content: Text('Check kembali username dan password Anda'),
             actions: [
-              TextButton(
+              ElevatedButton(
+                child: Text('OK'),
                 onPressed: () {
+                  // Close the dialog
                   Get.back();
                 },
-                child: Text('OK'),
               ),
             ],
           ),

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../karyawan/models/karyawan.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/izin_controller.dart';
 
 class IzinView extends GetView<IzinController> {
-  const IzinView({Key? key}) : super(key: key);
+  final Karyawan karyawan;
 
+  const IzinView({required this.karyawan, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -993,7 +994,7 @@ class IzinView extends GetView<IzinController> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.HOME);
+                    Get.offNamed(Routes.HOME, arguments: karyawan);
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

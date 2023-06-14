@@ -27,7 +27,11 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomeView(karyawan: Get.arguments as Karyawan),
+      page: () {
+        final karyawan = Get.arguments as Karyawan?;
+        return HomeView(
+            karyawan: karyawan ?? Karyawan(nama: '', nik: '', jabatan: ''));
+      },
       binding: HomeBinding(),
       children: [
         GetPage(
@@ -44,14 +48,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.IZIN,
-      page: () => const IzinView(),
+      page: () {
+        final karyawan = Get.arguments as Karyawan?;
+        return IzinView(
+            karyawan: karyawan ?? Karyawan(nama: '', nik: '', jabatan: ''));
+      },
       binding: IzinBinding(),
     ),
-    GetPage(
-      name: _Paths.PENGAJUANIZIN,
-      page: () => const PengajuanizinView(),
-      binding: PengajuanizinBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.PENGAJUANIZIN,
+    //   page: () => const PengajuanizinView(),
+    //   binding: PengajuanizinBinding(),
+    // ),
     GetPage(
       name: _Paths.PROFIL,
       page: () => const ProfilView(),
