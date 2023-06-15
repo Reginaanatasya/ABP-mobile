@@ -1,3 +1,4 @@
+import 'package:attendify/app/modules/karyawan/models/karyawan.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
@@ -147,160 +148,44 @@ class ProfilView extends GetView<ProfilController> {
                         color: Color.fromARGB(0, 232, 115, 115),
                         child: Column(
                           children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                      height:
-                                          30), // Jarak dari bagian atas container
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                    height: 54,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(0, 244, 67,
-                                          54), // Ganti dengan warna yang sesuai untuk tombol menu pertama
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Color.fromARGB(50, 0, 0,
-                                            0), // Ganti dengan warna border yang diinginkan
-                                        width:
-                                            2.0, // Ganti dengan lebar border yang diinginkan
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 16.0),
-                                          child: Text(
-                                            'Edit Profil',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 16.0),
-                                          child: ImageIcon(
-                                            AssetImage('assets/logo/next.png'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                      height:
-                                          10), // Jarak antara tombol pertama dan kedua
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                    height: 54,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(0, 76, 175,
-                                          79), // Ganti dengan warna dan konten yang sesuai untuk tombol menu kedua
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Color.fromARGB(50, 0, 0,
-                                            0), // Ganti dengan warna border yang diinginkan
-                                        width:
-                                            2.0, // Ganti dengan lebar border yang diinginkan
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 16.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              // Replace '1234567890' with the desired WhatsApp number
-                                              String whatsappNumber =
-                                                  '1234567890';
-                                              // Create a WhatsApp URL with the given number
-                                              String url =
-                                                  'https://wa.me/$whatsappNumber';
-                                              // Launch the URL using the url_launcher package
-                                              launch(url);
-                                            },
-                                            child: Text(
-                                              'Hubungi Admin',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 16.0),
-                                          child: ImageIcon(
-                                            AssetImage('assets/logo/next.png'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height:
-                                          10), // Jarak antara tombol kedua dan ketiga
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                    height: 54,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(0, 33, 149,
-                                          243), // Ganti dengan warna dan konten yang sesuai untuk tombol menu ketiga
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Color.fromARGB(50, 0, 0,
-                                            0), // Ganti dengan warna border yang diinginkan
-                                        width:
-                                            2.0, // Ganti dengan lebar border yang diinginkan
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 16.0),
-                                          child: Text(
-                                            'Kerjasama dengan Kami',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 16.0),
-                                          child: ImageIcon(
-                                            AssetImage('assets/logo/next.png'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             Align(
                               alignment: Alignment.center,
-                              child: SizedBox(height: 50),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    Get.toNamed(
+                                      Routes.EDITPROFIL,
+                                      arguments: {
+                                        "karyawan": Karyawan(
+                                          nama: "Kevin",
+                                          nik: "1234",
+                                          jabatan: "Karyawan",
+                                        ),
+                                        "token": "12345"
+                                      },
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Edit Profil",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.keyboard_arrow_right_rounded,
+                                        size: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                             Align(
                               alignment: Alignment.bottomCenter,

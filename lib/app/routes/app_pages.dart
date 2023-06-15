@@ -1,6 +1,8 @@
 import 'package:attendify/app/modules/karyawan/models/karyawan.dart';
 import 'package:get/get.dart';
 
+import '../modules/edit-profile/bindings/edit_profile_binding.dart';
+import '../modules/edit-profile/views/edit_profile_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
@@ -65,5 +67,10 @@ class AppPages {
       page: () => const ProfilView(),
       binding: ProfilBinding(),
     ),
+    GetPage(
+      name: _Paths.EDITPROFIL,
+      page: () => EditProfileView(),
+      binding: EditProfilBinding(),
+    )
   ];
 }

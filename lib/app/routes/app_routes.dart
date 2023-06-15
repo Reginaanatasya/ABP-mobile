@@ -8,6 +8,7 @@ abstract class Routes {
   static const IZIN = _Paths.IZIN;
   static const PENGAJUANIZIN = _Paths.PENGAJUANIZIN;
   static const PROFIL = _Paths.PROFIL;
+  static const EDITPROFIL = _Paths.EDITPROFIL;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const IZIN = '/izin';
   static const PENGAJUANIZIN = '/pengajuanizin';
   static const PROFIL = '/profil';
+  static const EDITPROFIL = '/edit-profil';
 }
