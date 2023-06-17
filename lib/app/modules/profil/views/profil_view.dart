@@ -3,11 +3,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../routes/app_pages.dart';
-
+import '../../karyawan/models/karyawan.dart';
+import '../../../routes/app_pages.dart';
+import '../../karyawan/models/karyawan.dart';
 import '../controllers/profil_controller.dart';
 
 class ProfilView extends GetView<ProfilController> {
-  const ProfilView({Key? key}) : super(key: key);
+  final Karyawan karyawan;
+
+  const ProfilView({required this.karyawan, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,21 +97,21 @@ class ProfilView extends GetView<ProfilController> {
                               .start, // Menempelkan teks ke kiri
                           children: [
                             Text(
-                              'Bernie',
+                              karyawan?.nama ?? '',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ), // Jarak antara teks dengan konten selanjutnya, atur sesuai kebutuhan Anda
                             Text(
-                              '123456',
+                              karyawan?.nik ?? '',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
                             Text(
-                              'IT',
+                              karyawan?.jabatan ?? '',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w300,
@@ -341,7 +345,8 @@ class ProfilView extends GetView<ProfilController> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      Get.toNamed(Routes.HOME);
+                                      Get.toNamed(Routes.HOME,
+                                          arguments: karyawan);
                                     },
                                     child: Column(
                                       mainAxisAlignment:
@@ -365,7 +370,8 @@ class ProfilView extends GetView<ProfilController> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Get.toNamed(Routes.IZIN);
+                                      Get.toNamed(Routes.IZIN,
+                                          arguments: karyawan);
                                     },
                                     child: Column(
                                       mainAxisAlignment:
@@ -389,7 +395,8 @@ class ProfilView extends GetView<ProfilController> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      //bingung
+                                      Get.toNamed(Routes.PROFIL,
+                                          arguments: karyawan);
                                     },
                                     child: Column(
                                       mainAxisAlignment:

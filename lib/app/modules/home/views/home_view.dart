@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../karyawan/models/karyawan.dart';
 import 'package:slider_button/slider_button.dart';
+import '../../profil/views/profil_view.dart';
 import '../controllers/home_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -519,7 +520,10 @@ class HomeView extends GetView<HomeController> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.toNamed(Routes.PROFIL);
+                                  if (karyawan != null) {
+                                    Get.to(
+                                        () => ProfilView(karyawan: karyawan!));
+                                  }
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

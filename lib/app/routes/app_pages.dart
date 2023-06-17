@@ -61,9 +61,8 @@ class AppPages {
     //   binding: PengajuanizinBinding(),
     // ),
     GetPage(
-      name: _Paths.PROFIL,
-      page: () => const ProfilView(),
-      binding: ProfilBinding(),
+      name: Routes.PROFIL,
+      page: () => ProfilView(karyawan: Get.arguments as Karyawan),
     ),
   ];
 }

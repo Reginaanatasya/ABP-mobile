@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../karyawan/models/karyawan.dart';
 import '../../../routes/app_pages.dart';
+import '../../profil/views/profil_view.dart';
 import '../controllers/izin_controller.dart';
 
 class IzinView extends GetView<IzinController> {
@@ -1016,7 +1017,11 @@ class IzinView extends GetView<IzinController> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    if (karyawan != null) {
+                      Get.to(() => IzinView(karyawan: karyawan!));
+                    }
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -1038,7 +1043,9 @@ class IzinView extends GetView<IzinController> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.PROFIL);
+                    if (karyawan != null) {
+                      Get.to(() => ProfilView(karyawan: karyawan!));
+                    }
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
